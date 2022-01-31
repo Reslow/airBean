@@ -1,0 +1,69 @@
+this is an exercise in course { front end development - secure communication}
+
+Instructions:  Create a webbapp where you can order coffee and get it delivered trough a drone ( drone  is not a part fo the assignment)
+
+Functionality: 
+- Ability to create an account ( username and password) and log in to site. 
+- the site should show an meny ( see menu.json )  that is used and send to frontend. 
+- everything is saved in nedb - database 
+- password should be hashed with bcrypt 
+-login with json webtokens. 
+
+Endpoints: 
+1   /api/coffee/menu     --GET--    (Return a coffee menu  ( only readable when user is loggedin)
+2   /api/auth/create     --POST--   (create user account)
+3   /api/auth/login      --POST--    (log in to site)
+
+
+Level up (when aboved is completed!)
+be able to add orders from a menu and save to database and the order is connected to a user. 
+
+Endpoint: 
+1. /api/coffee/order   --POST--   (save a order for a user and return a ETA-Time and orderNumber (can be randomely set) and send to frontend)
+
+---------------------------------------------------
+
+menu.json 
+
+{
+    "menu":[
+      {
+        "id":1,
+        "title":"Bryggkaffe",
+        "desc":"Bryggd på månadens bönor.",
+        "price":39
+      },
+      {
+        "id":2,
+        "title":"Caffè Doppio",
+        "desc":"Bryggd på månadens bönor.",
+        "price":49
+      },
+      {
+        "id":3,
+        "title":"Cappuccino",
+        "desc":"Bryggd på månadens bönor.",
+        "price":49
+      },
+      {
+        "id":4,
+        "title":"Latte Macchiato",
+        "desc":"Bryggd på månadens bönor.",
+        "price":49
+      },
+      {
+        "id":5,
+        "title":"Kaffe Latte",
+        "desc":"Bryggd på månadens bönor.",
+        "price":54
+      },
+      {
+        "id":6,
+        "title":"Cortado",
+        "desc":"Bryggd på månadens bönor.",
+        "price":39
+      }
+    ]
+  }
+
+  --------------------------------------------------------- 

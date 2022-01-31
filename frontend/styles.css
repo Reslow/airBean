@@ -1,0 +1,79 @@
+body {
+  background-color: #142b14;
+  color: white;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+
+main {
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  display: grid;
+  gap: 0px;
+  grid-template-columns: 30% 30%;
+  justify-content: space-evenly;
+  background-color: #152c15dc;
+}
+
+header {
+  text-align: center;
+  margin-top: 100px;
+}
+
+#signup,
+#login {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto;
+  gap: 7px;
+  padding: 20px;
+  background-color: #163516c4;
+  border-radius: 5px;
+}
+
+input {
+  line-height: 250%;
+  background-color: rgb(235, 241, 224);
+}
+
+.btn {
+  font-size: 1em;
+  font-weight: bold;
+}
+
+#signupBtn {
+  padding: 1rem;
+  font-size: 1rem;
+  padding: 0.5rem 3rem;
+  color: white;
+  box-shadow: 0 0 6px 0 rgba(157, 96, 212, 0.5);
+  border: solid 3px transparent;
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0)
+    ),
+    linear-gradient(101deg, #ffdb78, #e04f86);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  box-shadow: 2px 1000px 1px #152c1523 inset;
+  border-radius: 5px;
+  line-height: 40px;
+}
+#loginBtn {
+  padding: 1rem;
+  font-size: 1rem;
+  padding: 0.5rem 3rem;
+  color: white;
+  box-shadow: 0 0 6px 0 rgba(157, 96, 212, 0.5);
+  border: solid 3px transparent;
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0)
+    ),
+    linear-gradient(101deg, #ffdb78, #e04f86);
+  background-origin: border-box;
+  background-clip: content-box, border-box;
+  box-shadow: 2px 1000px 1px #152c15d7 inset;
+  border-radius: 5px;
+  line-height: 40px;
+}
