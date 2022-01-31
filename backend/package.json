@@ -1,0 +1,14 @@
+{
+  "name": "airbean",
+  "version": "1.0.0",
+  "description": "the most important order of the day",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Fanny",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.2"
+  }
+}
