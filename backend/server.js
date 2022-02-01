@@ -4,6 +4,9 @@ const nedb = require("nedb-promise");
 const app = express();
 const database = new nedb({ filename: "customers.db", autoload: true });
 
+const bcryptFunctions = require("./bcrypt.js");
+console.log(bcryptFunctions);
+
 const menu = require("./menu.json");
 
 app.use(express.static("../frontend"));
@@ -39,6 +42,10 @@ app.post("/api/auth/create", async (req, res) => {
   if (usernameExists == true || responsObject.emailExists == true) {
     responsObject.success = false;
   } else {
+    const hashedPassword = await bcryptFunctions.hashPassword(
+      credentials.password
+    );
+    credentials.password = hashedPassword;
     database.insert(credentials);
   }
 
@@ -56,7 +63,11 @@ app.post("/api/auth/login", async (req, res) => {
   console.log(account);
 
   if (account.length > 0) {
-    if (account[0].password == credentials.password) {
+    const correctPassword = await bcryptFunctions.comparePassword(
+      credentials.password,
+      account[0].password
+    );
+    if (correctPassword) {
       responsObject.success = true;
 
       const cookieId = Math.round(Math.random() * 10000);
@@ -68,7 +79,6 @@ app.post("/api/auth/login", async (req, res) => {
       res.cookie("loggedIn", cookieId);
     }
   }
-
   res.json(responsObject);
 });
 
