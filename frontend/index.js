@@ -11,7 +11,11 @@ async function signup(accountInformation) {
   });
 
   const data = await res.json();
-  console.log(data);
+  if (data.success == false) {
+    console.log("username already exists!, choose different");
+  } else {
+    console.log("SUCCESS, Welcome");
+  }
 }
 
 signupBtn.addEventListener("click", () => {
