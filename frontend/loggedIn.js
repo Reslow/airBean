@@ -4,7 +4,12 @@ const orderBtn = document.getElementById("orderBtn");
 const menuSelection = document.getElementById("menuSelection");
 
 async function isLoggedIn() {
-  const res = await fetch("http://localhost:3000/api/loggedIn");
+  const token = sessionStorage.getItem("token");
+  const res = await fetch("http://localhost:3000/api/loggedIn", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   const data = await res.json();
   console.log("LOGGEDIN FRONT END");
   console.log(data);
@@ -19,17 +24,24 @@ async function logout() {
   const data = await res.json();
   console.log("LOGOUT AT LOGGEDIN");
   console.log(data);
-  if (data) {
+  if (data.success) {
+    sessionStorage.clear();
     window.location.href = "http://localhost:3000/";
   }
 }
 
 async function deleteAccount() {
-  const res = await fetch("http://localhost:3000/api/deleteAccount");
+  const token = sessionStorage.getItem("token");
+  const res = await fetch("http://localhost:3000/api/deleteAccount", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   const data = await res.json();
   console.log("DELETE ACCOUNT AT LOOGEDIN");
-  console.log(data);
-  window.location.href = "http://localhost:3000/";
+  if (data.success) {
+    window.location.href = "http://localhost:3000/";
+  }
 }
 
 function setMenu(menu) {

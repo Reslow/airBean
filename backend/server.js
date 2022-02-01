@@ -2,6 +2,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const nedb = require("nedb-promise");
 const app = express();
+const jwt = require("jsonwebtoken");
 const database = new nedb({ filename: "customers.db", autoload: true });
 
 const bcryptFunctions = require("./bcrypt.js");
@@ -12,8 +13,6 @@ const menu = require("./menu.json");
 app.use(express.static("../frontend"));
 app.use(express.json());
 app.use(cookieParser());
-
-let accounts = [];
 
 app.post("/api/auth/create", async (req, res) => {
   const credentials = req.body;
@@ -57,6 +56,7 @@ app.post("/api/auth/login", async (req, res) => {
 
   let responsObject = {
     success: false,
+    token: "",
   };
 
   const account = await database.find({ username: credentials.username });
@@ -70,13 +70,12 @@ app.post("/api/auth/login", async (req, res) => {
     if (correctPassword) {
       responsObject.success = true;
 
-      const cookieId = Math.round(Math.random() * 10000);
+      // vår token blir krypterad med anv'ndarens användarnamn som kopplar vår token til användaren
 
-      database.update(
-        { username: credentials.username },
-        { $set: { cookie: cookieId } }
-      );
-      res.cookie("loggedIn", cookieId);
+      const token = jwt.sign({ username: account[0].username }, "a1b2c3", {
+        expiresIn: 600,
+      });
+      responsObject.token = token;
     }
   }
   res.json(responsObject);
@@ -84,16 +83,22 @@ app.post("/api/auth/login", async (req, res) => {
 
 app.get("/api/loggedIn", async (req, res) => {
   console.log("LOGGEDIN API");
-  const cookie = req.cookies.loggedIn;
+  const token = req.headers.authorization.replace("Bearer ", "");
 
   let responsObject = {
     loggedIn: false,
   };
 
-  const account = await database.find({ cookie: parseInt(cookie) });
+  try {
+    const data = jwt.verify(token, "a1b2c3");
 
-  if (account.length > 0) {
-    responsObject.loggedIn = true;
+    console.log(data);
+
+    if (data) {
+      responsObject.loggedIn = true;
+    }
+  } catch (error) {
+    responsObject.msg = " Token expired";
   }
 
   res.json(responsObject);
@@ -112,14 +117,21 @@ app.get("/api/logout", (req, res) => {
 app.get("/api/deleteAccount", (req, res) => {
   let cookie = req.cookies.loggedIn;
 
+  const token = req.headers.authorization.replace("Bearer ", "");
+
   const responsObject = {
     success: true,
   };
 
-  database.remove({ cookie: parseInt(cookie) });
+  try {
+    const data = jwt.verify(token, "a1b1c1");
 
-  console.log(accounts);
-  res.clearCookie("loggedIn");
+    database.remove({ username: data.username });
+  } catch (error) {
+    responsObject.success = false;
+    responsObject.msg = "token expired!";
+  }
+
   res.json(responsObject);
 });
 

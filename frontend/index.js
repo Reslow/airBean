@@ -21,16 +21,19 @@ async function signup(accountInformation) {
   }
 }
 
+function saveToken(token) {
+  sessionStorage.setItem("token", token);
+}
+
 async function login(accountInformation) {
   let res = await fetch("http://localhost:3000/api/auth/login", {
     method: "POST",
     body: JSON.stringify(accountInformation),
     headers: { "Content-Type": "application/json" },
   });
-  const data = res.json();
-  if (data.success == false) {
-    console.log("username or password is wrong or do not exist!");
-  } else {
+  const data = await res.json();
+  if (data.success) {
+    saveToken(data.token);
     console.log("SUCCESS, welcome to order!");
     window.location.href = "http://localhost:3000/loggedIn.html";
   }
