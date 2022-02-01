@@ -1,19 +1,18 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
+const nedb = require("nedb-promise");
 const app = express();
+const database = new nedb({ filename: "customers.db", autoload: true });
+
+const menu = require("./menu.json");
 
 app.use(express.static("../frontend"));
 app.use(express.json());
 app.use(cookieParser());
 
-let accounts = [
-  {
-    username: "ada",
-    email: "ada@ada",
-    password: "ada123",
-  },
-];
-app.post("/api/auth/create", (req, res) => {
+let accounts = [];
+
+app.post("/api/auth/create", async (req, res) => {
   const credentials = req.body;
   console.log("SIGNING UP");
 
@@ -23,76 +22,80 @@ app.post("/api/auth/create", (req, res) => {
     emailExists: false,
   };
 
-  accounts.forEach((account) => {
-    if (account.username == credentials.username) {
-      responsObject.usernameExists = true;
-    } else if (account.email == credentials.email) {
-      responsObject.emailExists = true;
-    }
+  const usernameExists = await database.find({
+    username: credentials.username,
   });
 
-  if (
-    responsObject.usernameExists == true ||
-    responsObject.emailExists == true
-  ) {
+  const emailExists = await database.find({
+    email: credentials.email,
+  });
+  if (usernameExists.length > 0) {
+    responsObject.usernameExists = true;
+  }
+  if (emailExists.length > 0) {
+    responsObject.emailExists = true;
+  }
+
+  if (usernameExists == true || responsObject.emailExists == true) {
     responsObject.success = false;
   } else {
-    accounts.push(credentials);
+    database.insert(credentials);
   }
 
   res.json(responsObject);
 });
 
-app.post("/api/auth/login", (req, res) => {
+app.post("/api/auth/login", async (req, res) => {
   const credentials = req.body;
 
   let responsObject = {
     success: false,
   };
 
-  accounts.forEach((account) => {
-    if (
-      account.username == credentials.username &&
-      account.password == credentials.password
-    ) {
+  const account = await database.find({ username: credentials.username });
+  console.log(account);
+
+  if (account.length > 0) {
+    if (account[0].password == credentials.password) {
       responsObject.success = true;
 
       const cookieId = Math.round(Math.random() * 10000);
 
-      account.cookie = cookieId;
+      database.update(
+        { username: credentials.username },
+        { $set: { cookie: cookieId } }
+      );
       res.cookie("loggedIn", cookieId);
-      console.log("check account");
-      console.log(account);
     }
-  });
+  }
 
   res.json(responsObject);
 });
 
-app.get("/api/loggedIn", (req, res) => {
-  // to check if user is logged in to system I check it has teh cookie taht is set in login process
+app.get("/api/loggedIn", async (req, res) => {
   console.log("LOGGEDIN API");
   const cookie = req.cookies.loggedIn;
-  console.log("coockie " + cookie);
-  console.log(console.log(accounts));
 
   let responsObject = {
     loggedIn: false,
   };
-  accounts.forEach((account) => {
-    if (account.cookie == parseInt(cookie)) {
-      responsObject.loggedIn = true;
-    }
-  });
-  console.log(responsObject);
+
+  const account = await database.find({ cookie: parseInt(cookie) });
+
+  if (account.length > 0) {
+    responsObject.loggedIn = true;
+  }
+
   res.json(responsObject);
 });
 
 app.get("/api/logout", (req, res) => {
   res.clearCookie("loggedIn");
+
   const responsObject = {
     success: true,
   };
+
   res.json(responsObject);
 });
 
@@ -103,16 +106,16 @@ app.get("/api/deleteAccount", (req, res) => {
     success: true,
   };
 
-  accounts = accounts.filter((account) => {
-    if (account.cookie !== parseInt(cookie)) {
-      return account;
-    }
-  });
+  database.remove({ cookie: parseInt(cookie) });
 
   console.log(accounts);
-
   res.clearCookie("loggedIn");
   res.json(responsObject);
+});
+
+app.get("/coffee/menu", (req, res) => {
+  // returning the menu
+  res.json(menu);
 });
 
 app.listen(3000, () => {

@@ -15,6 +15,10 @@ main {
   background-color: #152c15dc;
 }
 
+li {
+  list-style: none;
+}
+
 header {
   text-align: center;
   margin-top: 100px;
