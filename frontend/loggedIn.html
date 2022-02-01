@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Airbean- you are logged in</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Airbean!</h1>
+      <h3>The most important order of the day!</h3>
+    </header>
+    <main>
+      <div id="accountinformation">
+        <h2>Account:</h2>
+        <button type="text" id="logoutBtn">logout</button>
+        <h3><span id="UserDisplay"></span></h3>
+        <h3><span id="EmailDisplay"></span></h3>
+        <input type="text" id="changePassword" placeholder="new password" />
+        <button type="text" id="changePasswordBtn">update password</button>
+        <button type="text" id="deleteAccountBtn">delete account</button>
+      </div>
+      <div id="orderContainer">
+        <h1>select your order!</h1>
+        <div id="menuSelection"></div>
+        <button>lay order!</button>
+      </div>
+    </main>
+    <script src="./loggedIn.js"></script>
+  </body>
+</html>
