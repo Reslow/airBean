@@ -115,8 +115,6 @@ app.get("/api/logout", (req, res) => {
 });
 
 app.get("/api/deleteAccount", (req, res) => {
-  let cookie = req.cookies.loggedIn;
-
   const token = req.headers.authorization.replace("Bearer ", "");
 
   const responsObject = {
@@ -124,7 +122,7 @@ app.get("/api/deleteAccount", (req, res) => {
   };
 
   try {
-    const data = jwt.verify(token, "a1b1c1");
+    const data = jwt.verify(token, "a1b2c3");
 
     database.remove({ username: data.username });
   } catch (error) {

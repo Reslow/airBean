@@ -82,6 +82,7 @@ async function viewMenu() {
   const data = await res.json();
   console.log("MENU!!!!!! Frontend");
   console.log(data.menu);
+  console.log({ menu: data.menu });
   setMenu(data.menu);
 }
 
